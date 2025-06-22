@@ -1,0 +1,593 @@
+local g = getinfo or debug.getinfo
+local d = false
+local h = {}
+ 
+local x, y
+ 
+setthreadidentity(2)
+ 
+for i, v in getgc(true) do
+    if typeof(v) == "table" then
+        local a = rawget(v, "Detected")
+        local b = rawget(v, "Kill")
+ 
+        if typeof(a) == "function" and not x then
+            x = a
+ 
+            local o; o = hookfunction(x, function(c, f, n)
+                if c ~= "_" then
+                    if d then
+                        warn(`Adonis AntiCheat flagged\nMethod: {c}\nInfo: {f}`)
+                    end
+                end
+ 
+                return true
+            end)
+ 
+            table.insert(h, x)
+        end
+ 
+        if rawget(v, "Variables") and rawget(v, "Process") and typeof(b) == "function" and not y then
+            y = b
+            local o; o = hookfunction(y, function(f)
+                if d then
+                    warn(`Adonis AntiCheat tried to kill (fallback): {f}`)
+                end
+            end)
+ 
+            table.insert(h, y)
+        end
+    end
+end
+ 
+local o; o = hookfunction(getrenv().debug.info, newcclosure(function(...)
+    local a, f = ...
+ 
+    if x and a == x then
+        if d then
+            warn(`zins | adonis bypassed`)
+        end
+ 
+        return coroutine.yield(coroutine.running())
+    end
+ 
+    return o(...)
+end))
+ 
+setthreadidentity(7)
+
+
+
+
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "FLASHPOINT: Worlds Collide!",
+   Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
+   LoadingTitle = "Lustra On Top!",
+   LoadingSubtitle = "By Radiant",
+   Theme = "Amethyst", -- Check https://docs.sirius.menu/rayfield/configuration/themes
+
+   ToggleUIKeybind = "K", -- The keybind to toggle the UI visibility (string like "K" or Enum.KeyCode)
+
+   DisableRayfieldPrompts = false,
+   DisableBuildWarnings = false, -- Prevents Rayfield from warning when the script has a version mismatch with the interface
+
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = nil, -- Create a custom folder for your hub/game
+      FileName = "Big Hub"
+   },
+
+   Discord = {
+      Enabled = false, -- Prompt the user to join your Discord server if their executor supports it
+      Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ ABCD would be ABCD
+      RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+   },
+
+   KeySystem = true, -- Set this to true to use our key system
+   KeySettings = {
+      Title = "Lustra Key System",
+      Subtitle = "Lusta On Top!",
+      Note = "Join the discord to get key .gg/v7wkNXASTZ", -- Use this to tell the user how to get a key
+      FileName = "LustraBLR", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
+      SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+      GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+      Key = {"Lustra$387410"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+   }
+})
+
+Rayfield:Notify({
+   Title = "Lustra",
+   Content = "Anti-Cheat Bypass Has Been Loaded!",
+   Duration = 6.5,
+   Image = 4483362458,
+})
+
+
+
+local Tab = Window:CreateTab("Home", "shell")
+
+local Section = Tab:CreateSection("Warning")
+
+local Label = Tab:CreateLabel("Please note that this was made in a rush\n and im unsure on how detected it is.", "bell-ring")
+
+
+local Section = Tab:CreateSection("Local Player")
+
+
+local Button = Tab:CreateButton({
+   Name = "Become Invincible (Cant turn off)",
+   Callback = function()
+    local mt = getrawmetatable(game)
+setreadonly(mt, false)
+
+local oldNamecall = mt.__namecall
+local skipMethod = "FireServer"
+local skipName = "TakeDamage"
+
+mt.__namecall = newcclosure(function(self, ...)
+    local method = getnamecallmethod()
+    if method == skipMethod and self.Name == skipName then
+        return
+    end
+    return oldNamecall(self, ...)
+end)
+   end,
+})
+
+
+local Section = Tab:CreateSection("Lustra Customz")
+
+local Button = Tab:CreateButton({
+   Name = "Increase Boost Time (buggy)",
+   Callback = function()
+    local player = game:GetService("Players").LocalPlayer
+
+-- Wait for the PlayerData and RebirthUpgrades to exist
+local playerData = player:WaitForChild("PlayerData")
+local rebirthUpgrades = playerData:WaitForChild("RebirthUpgrades")
+local boostDuration = rebirthUpgrades:WaitForChild("Boost Duration")
+
+-- Check that it's an IntValue before modifying
+if boostDuration:IsA("IntValue") then
+    boostDuration.Value = 1000
+else
+    warn("Try again dumbass nigga")
+end
+
+   end,
+})
+
+
+
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+local Input = Tab:CreateInput({
+	Name = "Set Speed",
+	CurrentValue = "",
+	PlaceholderText = "Dont Make the number too high",
+	RemoveTextAfterFocusLost = false,
+	Flag = "SpeedMOD",
+	Callback = function(Text)
+		local number = tonumber(Text)
+		if number then
+			local success, err = pcall(function()
+				local rebirthUpgrades = player:WaitForChild("PlayerData"):WaitForChild("RebirthUpgrades")
+				local speed = rebirthUpgrades:WaitForChild("Speed")
+				if speed:IsA("IntValue") then
+					speed.Value = number
+				else
+					warn("Speed is not an IntValue")
+				end
+			end)
+			if not success then
+				warn("Error setting speed value:", err)
+			end
+		else
+			warn("Invalid input: not a number")
+		end
+	end,
+})
+
+
+
+
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+local Input = Tab:CreateInput({
+	Name = "Boost Speed",
+	CurrentValue = "",
+	PlaceholderText = "Dont make the number too high",
+	RemoveTextAfterFocusLost = false,
+	Flag = "Input2",
+	Callback = function(Text)
+		local number = tonumber(Text)
+		if number then
+			local success, err = pcall(function()
+				local rebirthUpgrades = player:WaitForChild("PlayerData"):WaitForChild("RebirthUpgrades")
+				local boostSpeed = rebirthUpgrades:WaitForChild("Boost Speed")
+				if boostSpeed:IsA("IntValue") then
+					boostSpeed.Value = number
+				else
+					warn("'Boost Speed' is not an IntValue")
+				end
+			end)
+			if not success then
+				warn("Error setting 'Boost Speed':", err)
+			end
+		else
+			warn("Invalid input: not a number")
+		end
+	end,
+})
+
+
+
+
+local Button = Tab:CreateButton({
+	Name = "Max Damage",
+	Callback = function()
+		local player = game:GetService("Players").LocalPlayer
+		local rebirthUpgrades = player:WaitForChild("PlayerData"):WaitForChild("RebirthUpgrades")
+		local damage = rebirthUpgrades:WaitForChild("Damage")
+
+		if damage:IsA("IntValue") then
+			damage.Value = 1000
+		else
+			warn("Damage is not an IntValue.")
+		end
+	end,
+})
+
+
+
+
+
+
+local Section = Tab:CreateSection("UI")
+
+local Button = Tab:CreateButton({
+   Name = "Kill Lustra",
+   Callback = function()
+    Rayfield:Destroy()
+   end,
+})
+
+
+local Button = Tab:CreateButton({
+   Name = "Infinite Yield",
+   Callback = function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+   end,
+})
+
+
+local Tab = Window:CreateTab("Godly Features", "atom")
+
+
+
+local Section = Tab:CreateSection("Money Stuff")
+
+
+local Button = Tab:CreateButton({
+   Name = "Give yourself a bunch of cash (might need to press twice)",
+   Callback = function()
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Events = ReplicatedStorage:WaitForChild("Events")
+
+local racePrompt = Events:WaitForChild("RacePromptInteract")
+local race = Events:WaitForChild("Race")
+
+for i = 1, 10000 do
+	task.spawn(function()
+		pcall(function()
+			-- Fire RacePromptInteract
+			racePrompt:FireServer("Join", "Around the World")
+
+			-- Fire Race
+			race:FireServer({
+				NextCheckpoint = 20,
+				Name = "Around the World",
+				FinishTime = 0
+			})
+		end)
+	end)
+end
+
+   end,
+})
+
+
+local Button = Tab:CreateButton({
+   Name = "Convert to ignition (faster)",
+   Callback = function()
+    local repStorage = game:GetService("ReplicatedStorage")
+local convert = repStorage:WaitForChild("Events"):WaitForChild("ConvertCashToIgnition")
+
+for i = 1, 200 do
+	task.spawn(function()
+		pcall(function()
+			convert:InvokeServer()
+		end)
+	end)
+end
+
+   end,
+})
+
+
+
+
+
+
+local Section = Tab:CreateSection("Auto Farm")
+
+
+local Label = Tab:CreateLabel("It may seem like its not working at first but you get levels over time", "info")
+local Label = Tab:CreateLabel("Use both auto level and auto defuse", "info")
+
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Events = ReplicatedStorage:WaitForChild("Events")
+
+local autoLevelEnabled = false
+local autoDefuseEnabled = false
+
+-- Auto Level Toggle
+Tab:CreateToggle({
+	Name = "Auto Level",
+	CurrentValue = false,
+	Flag = "AutoLevel",
+	Callback = function(Value)
+		autoLevelEnabled = Value
+		if Value then
+			task.spawn(function()
+				local remote = Events:WaitForChild("NPC_Killed")
+				while autoLevelEnabled do
+					pcall(function()
+						remote:InvokeServer("PIstol", -78467164)
+					end)
+				end
+			end)
+		end
+	end,
+})
+
+-- Auto Defuse Toggle
+Tab:CreateToggle({
+	Name = "Auto Defuse",
+	CurrentValue = false,
+	Flag = "AutoDefuse",
+	Callback = function(Value)
+		autoDefuseEnabled = Value
+		if Value then
+			task.spawn(function()
+				local remote = Events:WaitForChild("Bombs_Defused")
+				while autoDefuseEnabled do
+					pcall(function()
+						remote:InvokeServer(196782, { Defused = true })
+					end)
+				end
+			end)
+		end
+	end,
+})
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Events = ReplicatedStorage:WaitForChild("Events")
+local buyUpgrade = Events:WaitForChild("BuyUpgrade")
+
+local autoUpgradesEnabled = false
+
+Tab:CreateToggle({
+	Name = "Auto Buy Upgrades",
+	CurrentValue = false,
+	Flag = "AutoBuyUpgrades",
+	Callback = function(Value)
+		autoUpgradesEnabled = Value
+		if Value then
+			task.spawn(function()
+				while autoUpgradesEnabled do
+					local upgrades = {
+						"Speed",
+						"Flashtime Speed",
+						"Boost Duration",
+						"Boost Speed",
+						"Health",
+						"Damage"
+					}
+
+					for _, upgrade in ipairs(upgrades) do
+						pcall(function()
+							buyUpgrade:FireServer(upgrade)
+						end)
+						task.wait(0.2)
+					end
+
+					task.wait(1.5)
+				end
+			end)
+		end
+	end,
+})
+
+
+
+local Tab = Window:CreateTab("Shop", "shopping-cart")
+
+local Section = Tab:CreateSection("Buy Boosts")
+
+local Button = Tab:CreateButton({
+   Name = "Buy Velocity 9",
+   Callback = function()
+    local args = {
+	"V9"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("BuyProduct"):FireServer(unpack(args))
+
+   end,
+})
+
+
+local Button = Tab:CreateButton({
+   Name = "Buy Velocity X",
+   Callback = function()
+    local args = {
+	"V-X"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("BuyProduct"):FireServer(unpack(args))
+
+
+   end,
+})
+
+
+
+
+local Section = Tab:CreateSection("Buy Skin Crates (Mass Buying)")
+
+local Label = Tab:CreateLabel("Your game will freeze for a few seconds (dont worry)", "info")
+
+local Button = Tab:CreateButton({
+   Name = "Buy Multiversal Crate (20x)",
+   Callback = function()
+    for i = 1, 20 do
+        local args = {
+	"Multiversal"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Bundles"):WaitForChild("SpinCrate"):FireServer(unpack(args))
+end
+   end,
+})
+
+
+
+
+local Button = Tab:CreateButton({
+   Name = "Buy CW Crate (20x)",
+   Callback = function()
+    for i = 1, 20 do
+        local args = {
+	"CW"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Bundles"):WaitForChild("SpinCrate"):FireServer(unpack(args))
+end
+   end,
+})
+
+
+
+local Button = Tab:CreateButton({
+   Name = "Buy New 52 Crate (20x)",
+   Callback = function()
+    for i = 1, 20 do
+        local args = {
+	"N52"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Bundles"):WaitForChild("SpinCrate"):FireServer(unpack(args))
+end
+   end,
+})
+
+
+local Button = Tab:CreateButton({
+   Name = "Buy Comics Crate (20x)",
+   Callback = function()
+    for i = 1, 20 do
+        local args = {
+	"COMICS"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Bundles"):WaitForChild("SpinCrate"):FireServer(unpack(args))
+end
+   end,
+})
+
+
+local Button = Tab:CreateButton({
+   Name = "Buy Varis Crate (20x)",
+   Callback = function()
+    for i = 1, 20 do
+        local args = {
+	"Varis"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Bundles"):WaitForChild("SpinCrate"):FireServer(unpack(args))
+end
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Buy JUstice League Crate (20x)",
+   Callback = function()
+    for i = 1, 20 do
+        local args = {
+	"Justice League"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Bundles"):WaitForChild("SpinCrate"):FireServer(unpack(args))
+end
+   end,
+})
+
+
+
+local Button = Tab:CreateButton({
+   Name = "Buy 90s Crate (20x)",
+   Callback = function()
+    for i = 1, 20 do
+        local args = {
+	"90s"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Bundles"):WaitForChild("SpinCrate"):FireServer(unpack(args))
+end
+   end,
+})
+
+
+local Button = Tab:CreateButton({
+   Name = "Buy Classic Crate (20x)",
+   Callback = function()
+    for i = 1, 20 do
+        local args = {
+	"Classic"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Bundles"):WaitForChild("SpinCrate"):FireServer(unpack(args))
+end
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Buy Life & Death Crate (20x)",
+   Callback = function()
+    for i = 1, 20 do
+        local args = {
+	"Life & Death"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Bundles"):WaitForChild("SpinCrate"):FireServer(unpack(args))
+end
+   end,
+})
+
+
+local Button = Tab:CreateButton({
+   Name = "Buy Valentines Crate (20x)",
+   Callback = function()
+    for i = 1, 20 do
+        local args = {
+	"VALENTINES"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Bundles"):WaitForChild("SpinCrate"):FireServer(unpack(args))
+end
+   end,
+})
+
+
+
+
+
+
+
