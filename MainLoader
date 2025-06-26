@@ -1,0 +1,30 @@
+-- // Super Epic Lustra Loader \\ --
+
+
+
+
+
+local PlaceId = game.PlaceId
+
+local Scripts = {
+    [18668065416] = "BlueLockRivals",
+    [126884695634066] = "GrowAGarden",
+    [7516718402] = "NoobsMustDie",
+    [13796645198] = "FlashPointWorldsCollide",
+    [94647229517154] = "AzureLatchEXE"
+    
+
+}
+
+local ScriptName = Scripts[PlaceId]
+if ScriptName then
+    local success, result = pcall(function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/RadiantSkullz/Lustra/refs/heads/main/" .. ScriptName))()
+    end)
+
+    if not success then
+        warn("Failed to load:", ScriptName, result)
+    end
+else
+    warn("No script available for this place:", PlaceId)
+end
