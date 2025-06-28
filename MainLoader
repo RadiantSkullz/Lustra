@@ -1,30 +1,44 @@
 -- // Super Epic Lustra Loader \\ --
 
-
-
-
-
+local StarterGui = game:GetService("StarterGui")
+local MarketplaceService = game:GetService("MarketplaceService")
+local GameId = tostring(game.GameId)
 local PlaceId = game.PlaceId
 
-local Scripts = {
-    [18668065416] = "BlueLockRivals",
-    [126884695634066] = "GrowAGarden",
-    [7516718402] = "NoobsMustDie",
-    [13796645198] = "FlashPointWorldsCollide",
-    [94647229517154] = "AzureLatchEXE"
-    
-
+local ScriptsByGameId = {
+    ["6325068386"] = "BlueLockRivals",
+    ["7436755782"] = "GrowAGarden",    
+    ["7516718402"] = "NoobsMustDie",
+    ["4785982047"] = "FlashPointWorldsCollide",
+    ["6945584306"] = "AzureLatchEXE"        
 }
 
-local ScriptName = Scripts[PlaceId]
+local ScriptName = ScriptsByGameId[GameId]
 if ScriptName then
     local success, result = pcall(function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/RadiantSkullz/Lustra/refs/heads/main/" .. ScriptName))()
     end)
 
     if not success then
+        StarterGui:SetCore("SendNotification", {
+            Title = "Lustra Loader",
+            Text = "Failed to load: " .. ScriptName,
+            Duration = 5
+        })
         warn("Failed to load:", ScriptName, result)
     end
 else
-    warn("No script available for this place:", PlaceId)
+    local gameName = "Unknown Game"
+    pcall(function()
+        local info = MarketplaceService:GetProductInfo(PlaceId)
+        gameName = info.Name or gameName
+    end)
+
+    StarterGui:SetCore("SendNotification", {
+        Title = "Lustra Loader",
+        Text = "Unsupported Game: " .. gameName .. "\nGameId: " .. GameId,
+        Duration = 6
+    })
+
+    warn("No script available for:", gameName, "(GameId: " .. GameId .. ")")
 end
